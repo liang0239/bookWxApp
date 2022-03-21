@@ -10,12 +10,12 @@
 <view class="book-container" wx:else>
 	<block wx:if="{{bookList.length > 0}}">
 		<block wx:for="{{bookList}}" wx:key="index">
-			<view class="book bg-white" hover-class="book-hover" data-id="{{item.bkid}}" data-file="{{item.bkfile}}" catchtap="readBook">
+			<view class="book bg-white" hover-class="book-hover" data-id="{{item.bkId}}" data-file="{{item.bkFile}}" catchtap="readBook">
 				<view class="book-image">
-					<image src="{{item.bkcover}}" mode="scaleToFill"></image>
+					<image src="{{item.bkCover}}" mode="scaleToFill"></image>
 				</view>
 				<view class="book-name">
-					<text>{{ item.bkname }}</text>
+					<text>{{ item.bkName }}</text>
 				</view>
 			</view>
 		</block>

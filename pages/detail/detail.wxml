@@ -8,6 +8,8 @@
 
 			<view class="book-desc">
 				<text class="book-main-text">{{bookInfo.name}}</text>
+				<text class="book-text">{{bookInfo.price}}</text>
+				<text class="book-text">{{bookInfo.category}}</text>
 				<text class="book-text">{{bookInfo.author}}</text>
 				<text class="book-text">{{bookInfo.publisher}}</text>
 
@@ -52,8 +54,8 @@
 					</view>
 
 					<view class="comment-content">
-						<text class="user-name">{{item.uname}}</text>
-						<text class="user-comment">{{item.ccontent}}</text>
+						<text class="user-name">{{item.author}}</text>
+						<text class="user-comment">{{item.content}}</text>
 						<text class="comment-time">{{item.ctime}}</text>
 					</view>
 				</view>
@@ -66,7 +68,6 @@
 
 		</view>
 	</view>
-
 
 	<!-- bottom button -->
     <view class="fixed-bottom block-full-width flex-container bg-white">

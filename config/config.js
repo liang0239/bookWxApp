@@ -1,11 +1,12 @@
-const baseUrl = 'https://jeremygao.net/';
+const baseUrl = 'http://localhost:8081/';
 
-const getBooksUrl = baseUrl + 'api/book/getBooks';
-const commentUrl = baseUrl + 'api/comment/write';
-const queryBookUrl = baseUrl + 'api/book/queryBook';
-const loginUrl = baseUrl + 'login';
-const getBoughtBooksUrl = baseUrl + 'api/user/getBoughtBooks';
-const buyBookUrl = baseUrl + 'api/order/buy';
+const getBooksUrl = baseUrl + 'api/book/list';
+const commentUrl = baseUrl + 'api/comment/add';
+const queryBookUrl = baseUrl + 'api/mybook/get';
+const loginUrl = baseUrl + 'api/my/login';
+const getBoughtBooksUrl = baseUrl + 'api/mybook/list';
+const buyBookUrl = baseUrl + 'api/mybook/add';
+
 
 
 module.exports = {

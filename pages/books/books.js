@@ -47,14 +47,14 @@ Page({
         let that = this;
         wx.request({
             url: api.getBooksUrl,
+            method:'POST',
             data: {
-                is_all: 1
+                deleted: '0'
             },
             success: function(res) {
                 let data = res.data;
-                // console.log(data);
-
-                if (data.result === 0) {
+                // console.log(api.getBooksUrl);
+                if (data.code === 1000) {
                     setTimeout(function() {
                         that.setData({
                             bookList: data.data,

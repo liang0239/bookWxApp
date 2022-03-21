@@ -67,15 +67,16 @@ Page({
         let that = this;
         wx.request({
             url: api.getBoughtBooksUrl,
+            method: 'POST',
             data: {
-                skey: app.getLoginFlag()
+                uid: app.getLoginFlag()
             },
             success: function(res) {
                 let data = res.data;
 
-                if (data.result === 0) {
+                if (data.code === 1000) {
                     that.setData({
-                        bookList: data.list || []
+                        bookList: data.data || []
                     });
                 }
 

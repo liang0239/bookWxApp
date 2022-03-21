@@ -65,24 +65,28 @@ Page({
 
     submitComment: function(ev) {
         let that = this;
-        let formId = ev.detail.formId;
+        // console.log(ev.detail);
         if (that.checkUserInput()) {
-            console.log('submit!');
+            // console.log('submit!');
+            let userInfo = app.globalData.userInfo;
 
             let requestData = {
-                skey: app.getLoginFlag(),
+                uid: app.getLoginFlag(),
+                author: userInfo.nickName,
                 content: that.data.comment,
-                bookid: that.data.bookInfo.id,
-                formid: formId
+                bkId: that.data.bookInfo.id,
+                pid: 0
             };
 
+            // console.log(requestData);
             wx.request({
                 url: api.commentUrl,
                 method: 'POST',
                 data: requestData,
                 success: function(res) {
-
-                    if (res.data.result == 0) {
+                    res = res.data;
+                    // console.log(res);
+                    if (res.code == 1000) {
                         that.showInfo('评论成功', 'success', function() {
                             wx.setStorageSync('isFromBack', '1');
                             setTimeout(function() {
@@ -92,8 +96,8 @@ Page({
                             }, 1500);
                         });
                     } else {
-                        console.log(res.data);
-                        that.showInfo(res.data.errmsg);
+                        console.log(res);
+                        that.showInfo(res.msg);
                     }
 
                 },
@@ -121,13 +125,11 @@ Page({
      */
     onLoad: function(options) {
         let _bookInfo = {};
-
+        // console.log(options);
         for (let key in options) {
             _bookInfo[key] = decodeURIComponent(options[key]);
         }
-
         console.log(_bookInfo);
-
         this.setData({
             bookInfo: _bookInfo
         });

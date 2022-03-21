@@ -62,9 +62,10 @@ App({
 
                         success: function (infoRes) {
                             // 请求服务端的登录接口
+                            // console.log(infoRes);
                             wx.request({
                                 url: api.loginUrl,
-
+                                method: 'POST',
                                 data: {
                                     code: loginRes.code,                    // 临时登录凭证
                                     rawData: infoRes.rawData,               // 用户非敏感信息
@@ -75,12 +76,13 @@ App({
 
                                 success: function (res) {
                                     console.log('login success');
+                                    // console.log(res);
                                     res = res.data;
-
-                                    if (res.result == 0) {
-                                        that.globalData.userInfo = res.userInfo;
-                                        wx.setStorageSync('userInfo', JSON.stringify(res.userInfo));
-                                        wx.setStorageSync('loginFlag', res.skey);
+                                    // console.log(res);
+                                    if (res.code == 1000) {
+                                        that.globalData.userInfo = res.data;
+                                        wx.setStorageSync('userInfo', JSON.stringify(res.data));
+                                        wx.setStorageSync('loginFlag', res.data.id);
                                         callback();
                                     } else {
                                         that.showInfo(res.errmsg);
@@ -89,7 +91,7 @@ App({
 
                                 fail: function (error) {
                                     // 调用服务端登录接口失败
-                                    that.showInfo('调用接口失败');
+                                    that.showInfo('调用服务端登录接口失败:'+error);
                                     console.log(error);
                                 }
                             });
@@ -104,14 +106,14 @@ App({
 
                 } else {
                     // 获取 code 失败
-                    that.showInfo('登录失败');
+                    that.showInfo('调用wx.login获取code失败');
                     console.log('调用wx.login获取code失败');
                 }
             },
 
             fail: function (error) {
                 // 调用 wx.login 接口失败
-                that.showInfo('接口调用失败');
+                that.showInfo('调用 wx.login 接口失败：'+error);
                 console.log(error);
             }
         });
@@ -180,17 +182,20 @@ App({
 
     // 打开书籍
     openBook: function (filePath) {
+        console.log(filePath);
+        
         wx.openDocument({
             filePath: filePath,
+            fileType: 'pdf',
             success: function (res) {
                 console.log('打开文档成功')
             },
             fail: function (error) {
+                app.showInfo('文件打开失败');
                 console.log(error);
             }
         });
     },
-
 
     globalData: {
         userInfo: null

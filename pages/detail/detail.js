@@ -21,6 +21,8 @@ Page({
     goComment: function(ev) {
         // 获取dataset
         let info = ev.currentTarget.dataset;
+        // console.log(info);
+        // console.log(ev.currentTarget);
         let navigateUrl = '../comment/comment?';
 
         for (let key in info) {
@@ -41,6 +43,9 @@ Page({
         let key = 'book_' + that.data.bookInfo.id;
         // 书籍是否已下载过
         let downloadPath = app.getDownloadPath(key);
+        // console.log(downloadPath);
+        // console.log(fileUrl);
+        // console.log(key);
         if (downloadPath) {
             app.openBook(downloadPath);
             return;
@@ -65,7 +70,7 @@ Page({
 
             },
             fail: function(error) {
-                that.showInfo('文档下载失败');
+                that.showInfo('文档下载失败:'+error);
                 console.log(error);
             }
         });
@@ -81,9 +86,10 @@ Page({
 
     confirmBuyBook: function() {
         let that = this;
+        let book = that.data.bookInfo;
         wx.showModal({
             title: '提示',
-            content: '确定用1积分兑换此书吗？',
+            content: '确定用'+book.price+'积分兑换此书吗？',
             showCancel: true,
             cancelText: '打扰了',
             cancelColor: '#8a8a8a',
@@ -103,26 +109,36 @@ Page({
     // 兑换书籍
     buyBook: function() {
         let that = this;
-        let bookId = that.data.bookInfo.id;
+        let book = that.data.bookInfo;
+        console.log(book);
         let requestData = {
-            bookid: bookId,
-            skey: app.getLoginFlag()
+            bkId: book.id,
+            uid: app.getLoginFlag(),
+            bkFile: book.file,
+            bkName: book.name,
+            bkCover: book.image,
+            price: book.price
         };
+        let balance = app.globalData.userInfo.balance;
+        if(balance - book.price < 0){
+            that.showInfo('剩余积分：'+balance+'不足，无法兑换价格：'+book.price+'的书籍');
+            return;
+        }
 
         wx.request({
             url: api.buyBookUrl,
             method: 'POST',
             data: requestData,
             success: function(res) {
-                if (res.data.result === 0) {
+                res = res.data
+                if (res.code === 1000) {
                     // 将按钮置为“打开”
                     // 更新用户兑换币的值
                     that.setData({
                         bookIsBuy: 1
                     });
 
-                    let balance = app.globalData.userInfo.balance;
-                    app.globalData.userInfo.balance = balance - 1;
+                    app.globalData.userInfo.balance = balance - book.price;
                     wx.setStorageSync('userInfo', JSON.stringify(app.globalData.userInfo));
 
                     that.showInfo('购买成功', 'success');
@@ -144,20 +160,25 @@ Page({
     getPageData: function() {
 
         let that = this;
+        let book = that.data.bookInfo;
         let requestData = {
-            bookid: that.data.bookInfo.id,
-            skey: app.getLoginFlag()
+            bkId: book.id,
+            uid: app.getLoginFlag()
         };
 
         wx.request({
             url: api.queryBookUrl,
-            method: 'GET',
+            method:'POST',
             data: requestData,
             success: function(res) {
-                if (res.data.result === 0) {
+                // console.log(requestData);
+                res = res.data;
+                // console.log(res);
+                let data = res.data;
+                if (res.code === 1000) {
                     that.setData({
-                        commentList: res.data.data.lists || [],
-                        bookIsBuy: res.data.data.is_buy
+                        commentList: data.comments || [],
+                        bookIsBuy: data.isBuy
                     });
 
                     setTimeout(function() {
